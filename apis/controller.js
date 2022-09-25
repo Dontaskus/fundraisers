@@ -12,3 +12,5 @@ route.get("/fundraisers", (req, res)=>{
 		 }
 	})
 })
+
+module.exports=router
