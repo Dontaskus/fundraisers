@@ -1,9 +1,9 @@
 const mysql = require('mysql2');
-
-const connection = mysql.createConnection({
+module.exports = {
+  connection:()=>mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'password',
     database: 'crowdfundraisers_db'
-  });
+  })}
   
