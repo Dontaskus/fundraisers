@@ -15,13 +15,13 @@ route.get("/fundraisers", (req, res)=>{
 
 route.get("/fundraisers:id", (req, res)=>{
 	const {id}=req.params
-	connection.query("select * from fundraisers where id=?",[id], (err, records,fields)=> {
+	connection.query("select * from fundraisers where id=?",[id], (err, record,fields)=> {
 		 if (err){
 			 console.error("Error while retrieve the data");
 		 }else{
-			 res.send(records);
+			 res.send(record);
 		 }
 	})
 })
 
-module.exports=router
+module.exports=route
