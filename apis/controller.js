@@ -13,7 +13,7 @@ route.get("/fundraisers", (req, res)=>{
 	})
 })
 
-route.get("/fundraisers:id", (req, res)=>{
+route.get("/fundraisers/:id", (req, res)=>{
 	const {id}=req.params
 	connection.query("select * from fundraisers where id=?",[id], (err, record,fields)=> {
 		 if (err){
