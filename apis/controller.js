@@ -27,6 +27,12 @@ route.get("/fundraisers/:id", (req, res)=>{
 route.get("/fundraisers/search",(req,res)=>{
 	const {search}=req.query
 	const searchQuery=`%${search}%`
-	connection.query(`select * from fundraisers where orgarnizer LIKE ? or city LIKE ? or caption LIKE ?`)
+	connection.query(`select * from fundraisers where orgarnizer LIKE ? or city LIKE ? or caption LIKE ?`,[searchQuery,searchQuery,searchQuery],(err,records)=>{
+		if(err){
+			req.status(500).send({message:err})
+		}else{
+			res.status(200).send(records)
+		}
+	})
 })
 module.exports=route
