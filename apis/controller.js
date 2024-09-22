@@ -27,13 +27,12 @@ route.get("/fundraisers/:id", (req, res)=>{
 
 //The Search Endpoint
 
-route.get("/fundraisers/search", (req, res) => {
+route.get("/search", (req, res) => {
     const  search  = req.query.search;
     if (!search) {
         return res.status(400).send({ message: "Search query is required." });
     }
-    res.send(`You searched for ${search}`)
-/*
+
 const searchQuery = `%${search}%`;
     connection.query(
         `SELECT * FROM fundraisers WHERE organizer LIKE ? OR city LIKE ? OR caption LIKE ?`,
@@ -46,8 +45,7 @@ const searchQuery = `%${search}%`;
             }
         }
     );
-*/
+
     
 });
-
 module.exports=route
