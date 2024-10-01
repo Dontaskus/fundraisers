@@ -1,7 +1,4 @@
-
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -12,30 +9,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `fundraisers`
+-- Database: `crowdfundraisers_db`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `categories`
---
-
-CREATE TABLE `categories` (
-  `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `categories`
---
-
-INSERT INTO `categories` (`id`, `name`) VALUES
-(1, 'Health'),
-(2, 'Education'),
-(3, 'Environment'),
-(4, 'Animal Welfare'),
-(5, 'Arts and Culture');
 
 -- --------------------------------------------------------
 
@@ -52,7 +27,7 @@ CREATE TABLE `fundraisers` (
   `current_fund` bigint(20) NOT NULL,
   `active` tinyint(4) NOT NULL,
   `target_fund` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `fundraisers`
@@ -63,17 +38,16 @@ INSERT INTO `fundraisers` (`id`, `category_id`, `organizer`, `caption`, `city`, 
 (2, 2, 'EduFund', 'Help students get scholarships', 'Los Angeles', 30000, 1, 100000),
 (3, 3, 'EcoGroup', 'Protect our forests', 'San Francisco', 5000, 1, 25000),
 (4, 4, 'Animal Rescue', 'Save abandoned pets', 'Miami', 20000, 1, 75000),
-(5, 5, 'Art Foundation', 'Promote local artists', 'Chicago', 8000, 1, 40000);
+(5, 5, 'Art Foundation', 'Promote local artists', 'Chicago', 8000, 1, 40000),
+(6, 2, 'peter_johnson', 'Johnson Wildlife Fund', 'Dallas', 4000, 1, 20000),
+(7, 4, 'anna_taylor', 'Taylor Homeless Shelter', 'Austin', 13000, 1, 25000),
+(8, 1, 'linda_evans', 'Evans Childcare Fund', 'San Diego', 9000, 1, 18000),
+(9, 3, 'mark_white', 'White Education Trust', 'San Francisco', 15000, 1, 40000),
+(10, 4, 'chris_green', 'Green Tech Fund', 'Boston', 5000, 1, 35000);
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `categories`
---
-ALTER TABLE `categories`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `fundraisers`
@@ -93,6 +67,3 @@ ALTER TABLE `fundraisers`
   ADD CONSTRAINT `fundraisers_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);
 COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
