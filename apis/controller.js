@@ -15,7 +15,7 @@ route.get("/fundraisers", (req, res)=>{
 })
 //The Single Fundraiser Endpoint
 // The Single Fundraiser Endpoint with Donation Details
-router.get("/fundraisers/:id", (req, res) => {
+route.get("/fundraisers/:id", (req, res) => {
     const { id } = req.params;
 
     // Query to get the fundraiser details and donations
