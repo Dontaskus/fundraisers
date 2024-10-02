@@ -56,6 +56,41 @@ route.get("/fundraisers/:id", (req, res) => {
         }
     });
 });
+
+
+// The POST endpoint to create a new donation
+route.post("/donations", (req, res) => {
+    const { date, amount, giver, fundraiser_id } = req.body;
+
+    // To ensure all required fields are provided
+    if (!date || !amount || !giver || !fundraiser_id) {
+        return res.status(400).send({ error: "All fields (date, amount, giver, fundraiser_id) are required." });
+    }
+
+    const insertDonationQuery = `
+        INSERT INTO DONATION (DATE, AMOUNT, GIVER, FUNDRAISER_ID) 
+        VALUES (?, ?, ?, ?)
+    `;
+
+    connection.query(insertDonationQuery, [date, amount, giver, fundraiser_id], (err, result) => {
+        if (err) {
+            console.error("Error while inserting donation:", err);
+            res.status(500).send({ error: "Database error while inserting donation." });
+        } else {
+            res.status(201).send({
+                message: "Donation successfully created",
+                donation_id: result.insertId,  
+                donation: {
+                    date,
+                    amount,
+                    giver,
+                    fundraiser_id
+                }
+            });
+        }
+    });
+});
+
 //The Search Endpoint
 
 route.get("/search", (req, res) => {
