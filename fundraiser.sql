@@ -32,7 +32,6 @@ CREATE TABLE `fundraisers` (
 --
 -- Dumping data for table `fundraisers`
 --
-
 INSERT INTO `fundraisers` (`id`, `category_id`, `organizer`, `caption`, `city`, `current_fund`, `active`, `target_fund`) VALUES
 (1, 1, 'Health NGO', 'Support local health initiatives', 'New York', 15000, 1, 50000),
 (2, 2, 'EduFund', 'Help students get scholarships', 'Los Angeles', 30000, 1, 100000),

@@ -14,17 +14,48 @@ route.get("/fundraisers", (req, res)=>{
 	})
 })
 //The Single Fundraiser Endpoint
-route.get("/fundraisers/:id", (req, res)=>{
-	const {id}=req.params
-	connection.query("select * from fundraisers where id=?",[id], (err, record,fields)=> {
-		 if (err){
-			 console.error("Error while retrieve the data");
-		 }else{
-			 res.send(record);
-		 }
-	})
-})
+// The Single Fundraiser Endpoint with Donation Details
+router.get("/fundraisers/:id", (req, res) => {
+    const { id } = req.params;
 
+    // Query to get the fundraiser details and donations
+    const fundraiserQuery = `
+        SELECT f.*, d.DONATION_ID, d.DATE, d.AMOUNT, d.GIVER
+        FROM fundraisers f
+        LEFT JOIN DONATION d ON f.id = d.FUNDRAISER_ID
+        WHERE f.id = ?
+    `;
+
+    connection.query(fundraiserQuery, [id], (err, records) => {
+        if (err) {
+            console.error("Error while retrieving the data:", err);
+            res.status(500).send({ error: "Database retrieval error" });
+        } else {
+            if (records.length > 0) {
+                // Grouping the donations with the fundraiser details
+                const fundraiserDetails = {
+                    id: records[0].id,
+                    organizer: records[0].organizer,
+                    caption: records[0].caption,
+                    target_fund: records[0].target_fund,
+                    current_fund: records[0].current_fund,
+                    city: records[0].city,
+                    active: records[0].active,
+                    category_id: records[0].category_id,
+                    donations: records.map(record => ({
+                        donation_id: record.DONATION_ID,
+                        date: record.DATE,
+                        amount: record.AMOUNT,
+                        giver: record.GIVER
+                    })).filter(donation => donation.donation_id) 
+                };
+                res.send(fundraiserDetails);
+            } else {
+                res.status(404).send({ error: "Fundraiser not found" });
+            }
+        }
+    });
+});
 //The Search Endpoint
 
 route.get("/search", (req, res) => {
