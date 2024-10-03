@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 
 app.use(cors());
+app.use(express.json());
 const fundraiser = require("./apis/controller");
 app.use("/api", fundraiser);
 app.listen(8080);

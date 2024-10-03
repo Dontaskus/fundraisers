@@ -3,6 +3,7 @@ const db=require('../db/db-details')
 const connection=db.connection()
 connection.connect()
 const route=express.Router()
+
 //The List active fundraisers endpoint
 route.get("/fundraisers", (req, res)=>{
 	connection.query("select * from fundraisers where active != 0", (err, records,fields)=> {
@@ -13,7 +14,6 @@ route.get("/fundraisers", (req, res)=>{
 		 }
 	})
 })
-//The Single Fundraiser Endpoint
 // The Single Fundraiser Endpoint with Donation Details
 route.get("/fundraisers/:id", (req, res) => {
     const { id } = req.params;
