@@ -56,41 +56,6 @@ route.get("/fundraisers/:id", (req, res) => {
         }
     });
 });
-
-
-// The POST endpoint to create a new donation
-route.post("/donations", (req, res) => {
-    const { date, amount, giver, fundraiser_id } = req.body;
-
-    // To ensure all required fields are provided
-    if (!date || !amount || !giver || !fundraiser_id) {
-        return res.status(400).send({ error: "All fields (date, amount, giver, fundraiser_id) are required." });
-    }
-
-    const insertDonationQuery = `
-        INSERT INTO DONATION (DATE, AMOUNT, GIVER, FUNDRAISER_ID) 
-        VALUES (?, ?, ?, ?)
-    `;
-
-    connection.query(insertDonationQuery, [date, amount, giver, fundraiser_id], (err, result) => {
-        if (err) {
-            console.error("Error while inserting donation:", err);
-            res.status(500).send({ error: "Database error while inserting donation." });
-        } else {
-            res.status(201).send({
-                message: "Donation successfully created",
-                donation_id: result.insertId,  
-                donation: {
-                    date,
-                    amount,
-                    giver,
-                    fundraiser_id
-                }
-            });
-        }
-    });
-});
-
 //The Search Endpoint
 
 route.get("/search", (req, res) => {
@@ -114,4 +79,123 @@ const searchQuery = `%${search}%`;
 
     
 });
+// The POST endpoint to create a new fundraiser
+route.post("/fundraisers", (req, res) => {
+    const { category_id, organizer, caption, city, current_fund, active, target_fund } = req.body;
+
+    if (!category_id || !organizer || !caption || !city || current_fund === undefined || active === undefined || target_fund === undefined) {
+        return res.status(400).send({ error: "All fields (category_id, organizer, caption, city, current_fund, active, target_fund) are required." });
+    }
+
+    const insertFundraiserQuery = `
+        INSERT INTO fundraisers (category_id, organizer, caption, city, current_fund, active, target_fund)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    connection.query(insertFundraiserQuery, [category_id, organizer, caption, city, current_fund, active, target_fund], (err, result) => {
+        if (err) {
+            console.error("Error while inserting fundraiser:", err);
+            res.status(500).send({ error: "Database error while inserting fundraiser." });
+        } else {
+            res.status(201).send({
+                message: "Fundraiser successfully created",
+                fundraiser_id: result.insertId,  // Get the auto-incremented ID of the new fundraiser
+                fundraiser: {
+                    category_id,
+                    organizer,
+                    caption,
+                    city,
+                    current_fund,
+                    active,
+                    target_fund
+                }
+            });
+        }
+    });
+});
+
+route.post('/fundraisers', async (req, res) => {
+    const { category_id, organizer, caption, city, current_fund, active, target_fund } = req.body;
+
+    if (!category_id || !organizer || !caption || !city || !current_fund || active === undefined || !target_fund) {
+        return res.status(400).json({ error: "All fields (category_id, organizer, caption, city, current_fund, active, target_fund) are required." });
+    }
+
+        const query = `
+            INSERT INTO fundraisers (category_id, organizer, caption, city, current_fund, active, target_fund)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
+        await connection.query(query, [category_id, organizer, caption, city, current_fund, active, target_fund]);
+
+        res.status(201).json({ message: "Fundraiser created successfully!" });
+        res.status(500).json({ error: "An error occurred while creating the fundraiser." });
+});
+
+
+// The PUT endpoint to update an existing fundraiser by ID
+route.put("/fundraisers/:id", (req, res) => {
+    const { id } = req.params;
+    const { category_id, organizer, caption, city, current_fund, active, target_fund } = req.body;
+
+    if (!category_id && !organizer && !caption && !city && current_fund === undefined && active === undefined && target_fund === undefined) {
+        return res.status(400).send({ error: "At least one field (category_id, organizer, caption, city, current_fund, active, target_fund) is required to update." });
+    }
+    let updateFields = [];
+    let updateValues = [];
+
+    if (category_id !== undefined) {
+        updateFields.push("category_id = ?");
+        updateValues.push(category_id);
+    }
+    if (organizer !== undefined) {
+        updateFields.push("organizer = ?");
+        updateValues.push(organizer);
+    }
+    if (caption !== undefined) {
+        updateFields.push("caption = ?");
+        updateValues.push(caption);
+    }
+    if (city !== undefined) {
+        updateFields.push("city = ?");
+        updateValues.push(city);
+    }
+    if (current_fund !== undefined) {
+        updateFields.push("current_fund = ?");
+        updateValues.push(current_fund);
+    }
+    if (active !== undefined) {
+        updateFields.push("active = ?");
+        updateValues.push(active);
+    }
+    if (target_fund !== undefined) {
+        updateFields.push("target_fund = ?");
+        updateValues.push(target_fund);
+    }
+
+    updateValues.push(id); 
+
+    const updateQuery = `
+        UPDATE fundraisers
+        SET ${updateFields.join(", ")}
+        WHERE id = ?
+    `;
+
+    connection.query(updateQuery, updateValues, (err, result) => {
+        if (err) {
+            console.error("Error while updating fundraiser:", err);
+            res.status(500).send({ error: "Database error while updating fundraiser." });
+        } else if (result.affectedRows === 0) {
+            res.status(404).send({ error: "Fundraiser not found." });
+        } else {
+            res.status(200).send({
+                message: "Fundraiser updated successfully",
+                fundraiser_id: id,
+                updatedFields: req.body
+            });
+        }
+    });
+});
+
+
+
 module.exports=route
