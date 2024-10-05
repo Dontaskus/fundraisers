@@ -14,6 +14,39 @@ route.get("/fundraisers", (req, res)=>{
 		 }
 	})
 })
+// POST endpoint to insert a new donation for a specific fundraiser
+route.post("/donations", (req, res) => {
+    const { date, amount, giver, fundraiser_id } = req.body;
+
+    // Ensuring all required fields are provided
+    if (!date || !amount || !giver || !fundraiser_id) {
+        return res.status(400).json({
+            error: "All fields (date, amount, giver, fundraiser_id) are required."
+        });
+    }
+
+    const insertDonationQuery = `
+        INSERT INTO DONATION (DATE, AMOUNT, GIVER, FUNDRAISER_ID)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    connection.query(insertDonationQuery, [date, amount, giver, fundraiser_id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: "Error inserting donation." });
+        }
+
+        res.status(201).json({
+            message: "Donation successfully created",
+            donation_id: result.insertId,
+            donation: {
+                date,
+                amount,
+                giver,
+                fundraiser_id
+            }
+        });
+    });
+});
 // The Single Fundraiser Endpoint with Donation Details
 route.get("/fundraisers/:id", (req, res) => {
     const { id } = req.params;
