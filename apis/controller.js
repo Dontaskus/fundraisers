@@ -4,7 +4,7 @@ const connection=db.connection()
 connection.connect()
 const route=express.Router()
 // The GET endpoint for categories
-route.get('/api/categories', (req, res) => {
+route.get('/categories', (req, res) => {
     const sql = 'SELECT * FROM categories'; 
     connection.query(sql, (err, results) => {
       if (err) {
