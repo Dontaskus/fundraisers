@@ -3,6 +3,18 @@ const db=require('../db/db-details')
 const connection=db.connection()
 connection.connect()
 const route=express.Router()
+// The GET endpoint for categories
+route.get('/api/categories', (req, res) => {
+    const sql = 'SELECT * FROM categories'; 
+    connection.query(sql, (err, results) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to retrieve categories' });
+      }
+  
+      res.json(results);
+    });
+  });
+  
 
 //The List active fundraisers endpoint
 route.get("/fundraisers", (req, res)=>{
